@@ -36,7 +36,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internetmonitor v1.6.2
 	github.com/aws/aws-sdk-go-v2/service/ivschat v1.6.2
 	github.com/aws/aws-sdk-go-v2/service/kafka v1.22.8
-	github.com/aws/aws-sdk-go-v2/service/kendra v1.43.2
+	github.com/aws/aws-sdk-go-v2/service/kendra v1.44.0
 	github.com/aws/aws-sdk-go-v2/service/keyspaces v1.4.7
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.40.0
 	github.com/aws/aws-sdk-go-v2/service/lexmodelsv2 v1.32.7
