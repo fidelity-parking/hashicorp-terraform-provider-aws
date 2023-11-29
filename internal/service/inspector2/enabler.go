@@ -419,9 +419,13 @@ func waitEnabled(ctx context.Context, conn *inspector2.Client, accountIDs []stri
 		Delay:   10 * time.Second,
 	}
 
-	raw, err := stateConf.WaitForStateContext(ctx)
-	result := raw.(map[string]AccountResourceStatus)
-	return result, err
+	outputRaw, err := stateConf.WaitForStateContext(ctx)
+
+	if output, ok := outputRaw.(map[string]AccountResourceStatus); ok {
+		return output, err
+	}
+
+	return nil, err
 }
 
 func waitDisabled(ctx context.Context, conn *inspector2.Client, accountIDs []string, timeout time.Duration) error {
@@ -471,7 +475,7 @@ func statusEnablerAccountAndResourceTypes(ctx context.Context, conn *inspector2.
 			}) {
 				return true
 			}
-			if v.Status == types.StatusEnabled && tfslices.All(maps.Values(v.ResourceStatuses), tfslices.FilterEquals(types.StatusDisabled)) {
+			if v.Status == types.StatusEnabled && tfslices.All(maps.Values(v.ResourceStatuses), tfslices.PredicateEquals(types.StatusDisabled)) {
 				return true
 			}
 			return false
@@ -539,6 +543,9 @@ func AccountStatuses(ctx context.Context, conn *inspector2.Client, accountIDs []
 			continue
 		}
 		for k, v := range m {
+			if k == "LambdaCode" {
+				k = "LAMBDA_CODE"
+			}
 			status.ResourceStatuses[types.ResourceScanType(strings.ToUpper(k))] = v.Status
 		}
 		results[aws.ToString(a.AccountId)] = status
